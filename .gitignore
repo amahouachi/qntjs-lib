@@ -11,9 +11,7 @@ dist/
 # keep misc and config
 example-client/
 
-# keep lockfile out of source control if generated locally
-package-lock.json
-
 !scripts/*.js
 !vite.config.js
 !vitest.config.js
+!rollup*.js
