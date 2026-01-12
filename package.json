@@ -1,0 +1,58 @@
+{
+  "name": "qntjs-lib",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/bundle/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/bundle/index.js"
+    },
+    "./typed": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/bundle/index.js"
+    },
+    "./untyped": {
+      "types": "./dist/untyped/index.d.ts",
+      "import": "./dist/untyped/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "package.json"
+  ],
+  "scripts": {
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:bundle": "vite build",
+    "build:dts": "rollup -c rollup.dts.config.js",
+    "build:untyped": "node scripts/generate_untyped.js",
+    "build": "npm run build:types && npm run build:bundle && npm run build:dts && npm run build:untyped",
+    "prepack": "npm run build",
+    "test": "vitest --run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amahouachi/qntjs-lib.git"
+  },
+  "keywords": ["technical-analysis","indicators","ta","trading","finance","sma","ema","tema","kama","mfi","typescript","javascript","array-utils"],
+  "author": "Ahmed MAHOUACHI (https://github.com/amahouachi)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amahouachi/qntjs-lib/issues"
+  },
+  "homepage": "https://github.com/amahouachi/qntjs-lib#readme",
+  "description": "High-performance JavaScript/TypeScript library of technical-analysis indicators and array/math utilities (NaN-aware + dense fast paths).",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@vitest/coverage-istanbul": "^4.0.16",
+    "rollup": "^4.55.1",
+    "rollup-plugin-dts": "^6.3.0",
+    "talib": "^1.1.6",
+    "tulind": "^0.8.20",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.16"
+  }
+}

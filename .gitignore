@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+coverage/
+dist/
+.vscode/
+# ignore compiled JS, type declarations and source maps everywhere
+**/*.js
+**/*.d.ts
+**/*.js.map
+
+# keep misc and config
+example-client/
+
+# keep lockfile out of source control if generated locally
+package-lock.json
+
+!scripts/*.js
+!vite.config.js
+!vitest.config.js
