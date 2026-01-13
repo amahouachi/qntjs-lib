@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 1.1.1
+- Fix perf type exports
+
 ## 1.1.0
 - Add perf module
 - Improve `README.md`

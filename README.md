@@ -1,15 +1,15 @@
 # qntjs-lib
 
-High-performance JavaScript and TypeScript library of technical‑analysis indicators, array utilities, and numerical helpers.
+A pure fast JavaScript/TypeScript library of technical‑analysis indicators, trading performance/risk metrics, array utilities, and numerical helpers.
 
-This repository implements a wide set of TA indicators (EMA, TEMA, T3, MFI, KAMA, etc.), vectorized math functions, and statistical helpers. Implementations are optimized for two common usage patterns:
+This repository implements a wide set of TA indicators (EMA, TEMA, T3, MFI, KAMA, etc.), common trading performance metrics/utilities, vectorized math functions, and statistical helpers. Where applicable, implementations are optimized for two common usage patterns:
 
 - NaN‑aware workflows (default): functions are NaN‑aware and will skip NaN values where appropriate.
 - Dense fast‑path: when you know inputs contain no NaNs you can opt into a dense, faster implementation by passing `skipna=false` to supported functions.
 
 By default the main (typed) build returns typed arrays (e.g. `Float64Array`) for better numeric performance and predictable memory layout. A companion "untyped" build exposes the same API but returns plain `number[]` values for easier interoperability with plain JavaScript code.
 
-The library has no runtime dependencies and is zero-dependency by design. It can be used in browser web applications or in Node.js environments that support ESM imports.
+The library has no runtime dependencies. It can be used in browser web applications or in Node.js environments that support ESM imports.
 
 ## Quick Start
 
@@ -118,7 +118,7 @@ const filled = arr.ffill(a);
 ## List of available API
 
  - **`arr.*`** : `isna`, `notna`, `fillna`, `ffill`, `bfill`, `replace`, `dropna`, `allna`, `equals`, `countna`, `havena`, `lag`
- 
+
  - **`math.*`** : `add`, `sub`, `avg`, `mul`, `div`, `scale`, `abs`, `sign`, `round`, `floor`, `ceil`, `eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `and`, `or`, `not`, `clamp`, `sum`, `prod`, `min`, `max`, `argmin`, `argmax`, `cumsum`, `cumprod`, `cummax`, `cummin`, `rollsum`, `rollmin`, `rollmax`, `rollminmax`, `rollprod`, `rollargmin`, `rollargmax`, `diff`, `randuniform`, `randnormal`, `dot`, `norm`, `ols`, `olsMulti`
 
  - **`stats.*`** : `mean`, `hmean`, `gmean`, `mad`, `skew`, `kurtosis`, `median`, `quantile`, `percentiles`, `var`, `covar`, `stdev`, `corr`, `zscore`, `norminmax`, `winsorize`, `sample`, `shuffle`, `bootstrap`
