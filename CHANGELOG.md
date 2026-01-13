@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 2.0.1
+- Fixed api names in doc
+
 ## 2.0.0
 - Renamed valueAtRisk to var
 - Renamed expectedShortfall to expshortfall

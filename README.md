@@ -118,7 +118,7 @@ const filled = arr.ffill(a);
 
  - **`ta.*`** : `dema`, `ema`, `hma`, `kama`, `sma`, `wma`, `vwma`, `trima`, `t3`, `tema`, `rma`, `ao`, `apo`, `aroon`, `change`, `cmo`, `kst`, `macd`, `mom`, `ppo`, `roc`, `rsi`, `stoch`, `stochrsi`, `ultosc`, `wpr`, `supertrend`, `adx`, `adxr`, `dx`, `cci`, `di`, `dpo`, `ichimoku`, `psar`, `atr`, `tr`, `natr`, `bb`, `bbw`, `donchian`, `keltner`, `adosc`, `obv`, `pnvi`, `wad`, `ad`, `mfi`, `cross`, `crossover`, `crossunder`, `rising`, `falling`
 
- - **`perf.*`** : `returns`, `logreturns`, `cumreturns`, `cagr`, `dailyReturns`, `dd`, `maxdd`, `maxddDetails`, `dduration`, `rollmaxdd`, `recoveryFactor`, `calmarRatio`, `ulcerIndex`, `rollUlcerIndex`, `sharpe`, `sortino`, `rollsharpe`, `rollsortino`, `vol`, `rollvol`, `valueAtRisk`, `expectedShortfall`, `tailRatio`, `omegaRatio`
+ - **`perf.*`** : `returns`, `logreturns`, `cumreturns`, `cagr`, `dailyreturns`, `dd`, `maxdd`, `maxddDetails`, `dduration`, `rollmaxdd`, `recoveryfactor`, `calmar`, `ulcer`, `rollulcer`, `sharpe`, `sortino`, `rollsharpe`, `rollsortino`, `vol`, `rollvol`, `var` (`valueAtRisk`), `expshortfall`, `tail`, `omega`
 
 
 ## skipna and dense fast-path
