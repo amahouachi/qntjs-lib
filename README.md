@@ -55,12 +55,78 @@ ta.sma(pricesWithGaps, 5);
 ta.sma(densePrices, 5, false);
 ```
 
-## API highlights
+## Modules and examples
 
- - `arr.*` — array utilities: `isna`, `notna`, `fillna`, `ffill`, `bfill`, `replace`, `dropna`, `allna`, `equals`, `countna`, `havena`, `lag`
- - `math.*` — math helpers: `add`, `sub`, `avg`, `mul`, `div`, `scale`, `abs`, `sign`, `round`, `floor`, `ceil`, `eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `and`, `or`, `not`, `clamp`, `sum`, `prod`, `min`, `max`, `argmin`, `argmax`, `cumsum`, `cumprod`, `cummax`, `cummin`, `rollsum`, `rollmin`, `rollmax`, `rollminmax`, `rollprod`, `rollargmin`, `rollargmax`, `diff`, `randuniform`, `randnormal`, `dot`, `norm`, `ols`, `olsMulti`
- - `stats.*` — statistical helpers: `mean`, `hmean`, `gmean`, `mad`, `skew`, `kurtosis`, `median`, `quantile`, `percentiles`, `var`, `covar`, `stdev`, `corr`, `zscore`, `norminmax`, `winsorize`, `sample`, `shuffle`, `bootstrap`
-- `ta.*` — technical indicators: `dema`, `ema`, `hma`, `kama`, `sma`, `wma`, `vwma`, `trima`, `t3`, `tema`, `rma`, `ao`, `apo`, `aroon`, `change`, `cmo`, `kst`, `macd`, `mom`, `ppo`, `roc`, `rsi`, `stoch`, `stochrsi`, `ultosc`, `wpr`, `supertrend`, `adx`, `adxr`, `dx`, `cci`, `di`, `dpo`, `ichimoku`, `psar`, `atr`, `tr`, `natr`, `bb`, `bbw`, `donchian`, `keltner`, `adosc`, `obv`, `pnvi`, `wad`, `ad`, `mfi`, `cross`, `crossover`, `crossunder`, `rising`, `falling`
+Overview of top-level modules and minimal examples showing common usage patterns.
+
+### `ta` — technical indicators (moving averages, oscillators, volatility measures).
+
+Example: compute an exponential moving average (EMA)
+
+```js
+import { ta } from 'qntjs-lib';
+const prices = [1,2,3,4,5,6,7];
+const ema3 = ta.ema(prices, 3); // Float64Array
+```
+
+### `math` — array-oriented math primitives and elementwise operations.
+
+Example: elementwise subtract and scale
+
+```js
+import { math } from 'qntjs-lib';
+const a = [1,2,3];
+const b = [0.1,0.1,0.1];
+const diff = math.sub(a, b); // Float64Array of a-b
+const scaled = math.scale(diff, 100);
+```
+
+### `perf` — performance and risk helpers (returns, drawdowns, volatility, VaR/ES, ratios).
+
+Example: compute daily returns, Sharpe, and parametric VaR
+
+```js
+import { perf } from 'qntjs-lib';
+const prices = [100, 110, 105, 120];
+const rets = perf.returns(prices); // simple returns (Float32Array)
+const daily = perf.dailyReturns([Date.now(), Date.now() + 86400000], [0.01, 0.02]);
+const sr = perf.sharpe([0.01, -0.02, 0.03]);
+const varP = perf.valueAtRisk([0.01, -0.02, 0.03], 0.05, 'parametric');
+```
+
+### `stats` — aggregations, percentiles, variance, sampling utilities.
+
+Example: quantile and sample
+
+```js
+import { stats } from 'qntjs-lib';
+const v = stats.quantile([1,2,3,4,5], 0.1);
+const sample = stats.sample([1,2,3,4,5], 3);
+```
+
+### `arr` — low-level array utilities (NaN handling, masks, fill/shift helpers).
+
+Example: drop NaNs and forward-fill
+
+```js
+import { arr } from 'qntjs-lib';
+const a = [NaN, 1, NaN, 2];
+const clean = arr.dropna(a);
+const filled = arr.ffill(a);
+```
+
+## List of available API
+
+ - **`arr.*`** : `isna`, `notna`, `fillna`, `ffill`, `bfill`, `replace`, `dropna`, `allna`, `equals`, `countna`, `havena`, `lag`
+ 
+ - **`math.*`** : `add`, `sub`, `avg`, `mul`, `div`, `scale`, `abs`, `sign`, `round`, `floor`, `ceil`, `eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `and`, `or`, `not`, `clamp`, `sum`, `prod`, `min`, `max`, `argmin`, `argmax`, `cumsum`, `cumprod`, `cummax`, `cummin`, `rollsum`, `rollmin`, `rollmax`, `rollminmax`, `rollprod`, `rollargmin`, `rollargmax`, `diff`, `randuniform`, `randnormal`, `dot`, `norm`, `ols`, `olsMulti`
+
+ - **`stats.*`** : `mean`, `hmean`, `gmean`, `mad`, `skew`, `kurtosis`, `median`, `quantile`, `percentiles`, `var`, `covar`, `stdev`, `corr`, `zscore`, `norminmax`, `winsorize`, `sample`, `shuffle`, `bootstrap`
+
+- **`ta.*`** : `dema`, `ema`, `hma`, `kama`, `sma`, `wma`, `vwma`, `trima`, `t3`, `tema`, `rma`, `ao`, `apo`, `aroon`, `change`, `cmo`, `kst`, `macd`, `mom`, `ppo`, `roc`, `rsi`, `stoch`, `stochrsi`, `ultosc`, `wpr`, `supertrend`, `adx`, `adxr`, `dx`, `cci`, `di`, `dpo`, `ichimoku`, `psar`, `atr`, `tr`, `natr`, `bb`, `bbw`, `donchian`, `keltner`, `adosc`, `obv`, `pnvi`, `wad`, `ad`, `mfi`, `cross`, `crossover`, `crossunder`, `rising`, `falling`
+
+ - **`perf.*`** : `returns`, `logreturns`, `cumreturns`, `cagr`, `dailyReturns`, `dd`, `maxdd`, `maxddDetails`, `dduration`, `rollmaxdd`, `recoveryFactor`, `calmarRatio`, `ulcerIndex`, `rollUlcerIndex`, `sharpe`, `sortino`, `rollsharpe`, `rollsortino`, `vol`, `rollvol`, `valueAtRisk`, `expectedShortfall`, `tailRatio`, `omegaRatio`
+
 
 ## Tests & development
 

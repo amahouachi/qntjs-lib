@@ -42,8 +42,9 @@ export const math = wrapNamespace(core.math || {});
 export const ta = wrapNamespace(core.ta || {});
 export const arr = wrapNamespace(core.arr || {});
 export const stats = wrapNamespace(core.stats || {});
+export const perf = wrapNamespace(core.perf || {});
 
-const _default = { math, ta, arr, stats };
+const _default = { math, ta, arr, stats, perf };
 export default _default;
 `;
 
@@ -61,7 +62,7 @@ const sourceFile = ts.createSourceFile(
 
 const functionMap = new Map(); // functionName -> { params, returnType, jsDoc }
 const typeAliases = []; // Store type aliases to include
-const namespaceMembers = { math: new Set(), ta: new Set(), arr: new Set(), stats: new Set() };
+const namespaceMembers = { math: new Set(), ta: new Set(), arr: new Set(), stats: new Set(), perf: new Set() };
 
 // First pass: collect all function declarations with JSDoc and type aliases
 function extractFunctions(node) {
@@ -155,7 +156,7 @@ sourceFile.forEachChild(node => {
       const exportedName = element.name.text; // 'arr', 'math', etc.
       const propertyName = element.propertyName?.text; // 'arr_d', 'index_d$2', etc.
       
-      if (['math', 'ta', 'arr', 'stats'].includes(exportedName) && propertyName) {
+      if (['math', 'ta', 'arr', 'stats', 'perf'].includes(exportedName) && propertyName) {
         namespaceAliases.set(propertyName, exportedName);
       }
     });
@@ -214,7 +215,7 @@ for (const [nsName, members] of Object.entries(namespaceMembers)) {
   typeDeclaration += `}\n\n`;
 }
 
-typeDeclaration += `export { math, ta, arr, stats };\n`;
+typeDeclaration += `export { math, ta, arr, stats, perf };\n`;
 
 fs.writeFileSync(dtsOut, typeDeclaration, 'utf8');
 console.log('Wrote', dtsOut);
