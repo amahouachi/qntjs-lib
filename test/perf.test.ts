@@ -29,7 +29,7 @@ describe('perf helpers', () => {
     const day0 = Date.UTC(2026, 0, 1);
     const ts = [day0, day0 + 1000, day0 + DAY];
     const rets = [0.01, 0.02, 0.03];
-    const res = perf.dailyReturns(ts, rets);
+    const res = perf.dailyreturns(ts, rets);
     expect(res.days.length).toBe(2);
     // day0 compounded: (1.01 * 1.02) - 1
     expect(res.dailyReturns[0]).toBeCloseTo((1 + 0.01) * (1 + 0.02) - 1, 8);
@@ -62,15 +62,15 @@ describe('perf helpers', () => {
 
   it('recoveryFactor, calmarRatio and ulcerIndex produce finite numbers', () => {
     const eq = [100, 90, 95, 80, 120];
-    const rf = perf.recoveryFactor(eq);
+    const rf = perf.recoveryfactor(eq);
     expect(typeof rf).toBe('number');
     expect(Number.isFinite(rf)).toBe(true);
 
-    const cal = perf.calmarRatio(eq, null, 252);
+    const cal = perf.calmar(eq, null, 252);
     expect(typeof cal).toBe('number');
     expect(Number.isFinite(cal)).toBe(true);
 
-    const ui = perf.ulcerIndex(eq);
+    const ui = perf.ulcer(eq);
     expect(typeof ui).toBe('number');
     expect(ui).toBeGreaterThanOrEqual(0);
   });
@@ -90,19 +90,19 @@ describe('perf helpers', () => {
 
   it('distribution helpers (VaR, ES, omega, tailRatio)', () => {
     const rets = [0.01, -0.05, 0.02, -0.03, 0.04, 0.0];
-    const hv = perf.valueAtRisk(rets, 0.2, 'historical');
+    const hv = perf.var(rets, 0.2, 'historical');
     expect(typeof hv).toBe('number');
 
-    const pv = perf.valueAtRisk(rets, 0.05, 'parametric');
+    const pv = perf.var(rets, 0.05, 'parametric');
     expect(typeof pv).toBe('number');
 
-    const es = perf.expectedShortfall(rets, 0.2, 'historical');
+    const es = perf.expshortfall(rets, 0.2, 'historical');
     expect(typeof es).toBe('number');
 
-    const or = perf.omegaRatio(rets, 0);
+    const or = perf.omega(rets, 0);
     expect(typeof or).toBe('number');
 
-    const tr = perf.tailRatio(rets, 0.2);
+    const tr = perf.tail(rets, 0.2);
     expect(typeof tr).toBe('number');
   });
 
@@ -161,18 +161,17 @@ describe('perf edge cases', () => {
 
   it('distribution edge cases and omega/tail behaviors', () => {
     // invalid alpha
-    expect(Number.isNaN(perf.valueAtRisk([], 0, 'historical'))).toBe(true);
-    expect(Number.isNaN(perf.valueAtRisk([1, 2, 3], -0.1 as any))).toBe(true);
+    expect(Number.isNaN(perf.var([], 0, 'historical'))).toBe(true);
+    expect(Number.isNaN(perf.var([1, 2, 3], -0.1 as any))).toBe(true);
 
     // expectedShortfall historical with empty
-    expect(Number.isNaN(perf.expectedShortfall([], 0.05, 'historical'))).toBe(true);
-
+    expect(Number.isNaN(perf.expshortfall([], 0.05, 'historical'))).toBe(true);
     // omegaRatio: all positive -> sumNeg == 0 -> Infinity
-    const or = perf.omegaRatio([0.1, 0.2, 0.05], 0);
+    const or = perf.omega([0.1, 0.2, 0.05], 0);
     expect(or).toBe(Infinity);
 
     // tailRatio for single-value input returns numeric
-    const tr = perf.tailRatio([0.01], 0.5);
+    const tr = perf.tail([0.01], 0.5);
     expect(typeof tr).toBe('number');
   });
 
@@ -210,33 +209,33 @@ describe('perf edge cases', () => {
 
   it('rollmaxdd/rollUlcerIndex invalid-window and minPeriod behaviors', () => {
     expect(() => perf.rollmaxdd([1,2,3], 0)).toThrow();
-    expect(() => perf.rollUlcerIndex([1,2,3], 0)).toThrow();
+    expect(() => perf.rollulcer([1,2,3], 0)).toThrow();
 
     // rollUlcerIndex with minPeriod larger than available valid points yields NaN
-    const ru = perf.rollUlcerIndex([NaN, 1, 2], 3, 3);
+    const ru = perf.rollulcer([NaN, 1, 2], 3, 3);
     expect(Number.isNaN(ru[2])).toBe(true);
   });
 
   it('valueAtRisk/expectedShortfall parametric uses normInv lower/upper regions', () => {
     const rets = [0.01, -0.02, 0.03, -0.01, 0.02];
     // very small alpha -> lower rational branch
-    const vlow = perf.valueAtRisk(rets, 0.01, 'parametric');
+    const vlow = perf.var(rets, 0.01, 'parametric');
     expect(typeof vlow).toBe('number');
     // very large alpha -> upper rational branch
-    const vhigh = perf.valueAtRisk(rets, 0.99, 'parametric');
+    const vhigh = perf.var(rets, 0.99, 'parametric');
     expect(typeof vhigh).toBe('number');
     // expectedShortfall parametric
-    const esLow = perf.expectedShortfall(rets, 0.01, 'parametric');
+    const esLow = perf.expshortfall(rets, 0.01, 'parametric');
     expect(typeof esLow).toBe('number');
   });
 
   it('tailRatio/omega edge cases produce NaN or Infinity as expected', () => {
     // tailRatio on small positive sample -> numeric or NaN depending on quantile ties; accept numeric
-    const tr = perf.tailRatio([0.1, 0.2, 0.3], 0.2);
+    const tr = perf.tail([0.1, 0.2, 0.3], 0.2);
     expect(typeof tr).toBe('number');
 
     // omegaRatio all positive -> Infinity
-    expect(perf.omegaRatio([0.1, 0.2], 0)).toBe(Infinity);
+    expect(perf.omega([0.1, 0.2], 0)).toBe(Infinity);
   });
 
     it('additional dd and recovery edge branches', () => {
@@ -254,24 +253,24 @@ describe('perf edge cases', () => {
 
     it('recoveryFactor/calmarRatio NaN branches and lookback window path', () => {
       // first value <= 0 should yield NaN
-      expect(Number.isNaN(perf.recoveryFactor([0, 1, 2]))).toBe(true);
+      expect(Number.isNaN(perf.recoveryfactor([0, 1, 2]))).toBe(true);
 
       // calmarRatio with a small lookback that triggers candidate/startIdx selection
       const eq = [100, 110, 105, 120, 130, 125, 140];
-      const cr = perf.calmarRatio(eq, 0.01, 252);
+      const cr = perf.calmar(eq, 0.01, 252);
       // either finite number or NaN depending on mdd; ensure it doesn't throw
       expect(typeof cr).toBe('number');
     });
 
     it('distribution NaN/degenerate branches (parametric sigma=0, tail lowMean==0)', () => {
       // parametric with zero variance -> may return NaN or a numeric result depending on stdev implementation
-      const pvZero = perf.valueAtRisk([0.01, 0.01, 0.01], 0.05, 'parametric');
+      const pvZero = perf.var([0.01, 0.01, 0.01], 0.05, 'parametric');
       expect(typeof pvZero).toBe('number');
-      const esZero = perf.expectedShortfall([0.01, 0.01, 0.01], 0.05, 'parametric');
+      const esZero = perf.expshortfall([0.01, 0.01, 0.01], 0.05, 'parametric');
       expect(typeof esZero).toBe('number');
 
       // tailRatio where lowMean == 0 should return NaN
-      const trZeroLow = perf.tailRatio([0, 0, 1, 1], 0.25);
+      const trZeroLow = perf.tail([0, 0, 1, 1], 0.25);
       expect(Number.isNaN(trZeroLow)).toBe(true);
     });
 
@@ -312,59 +311,58 @@ describe('perf edge cases', () => {
       const allNaN = [NaN, NaN, NaN];
 
       // empty inputs -> NaN for scalar functions
-      expect(Number.isNaN(perf.valueAtRisk(empty))).toBe(true);
-      expect(Number.isNaN(perf.expectedShortfall(empty))).toBe(true);
-      expect(Number.isNaN(perf.tailRatio(empty))).toBe(true);
-      expect(Number.isNaN(perf.omegaRatio(empty))).toBe(true);
+      expect(Number.isNaN(perf.var(empty))).toBe(true);
+      expect(Number.isNaN(perf.expshortfall(empty))).toBe(true);
+      expect(Number.isNaN(perf.tail(empty))).toBe(true);
+      expect(Number.isNaN(perf.omega(empty))).toBe(true);
 
       // all-NaN inputs -> NaN for scalar functions
-      expect(Number.isNaN(perf.valueAtRisk(allNaN))).toBe(true);
-      expect(Number.isNaN(perf.expectedShortfall(allNaN))).toBe(true);
-      expect(Number.isNaN(perf.tailRatio(allNaN))).toBe(true);
-      expect(Number.isNaN(perf.omegaRatio(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.var(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.expshortfall(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.tail(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.omega(allNaN))).toBe(true);
 
       // default params: call without optional args should produce numeric where possible
       const rets = [0.01, -0.02, 0.03, -0.01, 0.02];
-      expect(typeof perf.valueAtRisk(rets)).toBe('number');
-      expect(typeof perf.expectedShortfall(rets)).toBe('number');
-      expect(typeof perf.tailRatio(rets)).toBe('number');
-      expect(typeof perf.omegaRatio(rets)).toBe('number');
+      expect(typeof perf.var(rets)).toBe('number');
+      expect(typeof perf.expshortfall(rets)).toBe('number');
+      expect(typeof perf.tail(rets)).toBe('number');
+      expect(typeof perf.omega(rets)).toBe('number');
     });
 
     it('distribution invalid alpha (>1) returns NaN for tailRatio and expectedShortfall', () => {
       const rets = [0.01, -0.02, 0.03];
-      expect(Number.isNaN(perf.tailRatio(rets, 1.1))).toBe(true);
-      expect(Number.isNaN(perf.expectedShortfall(rets, 1.5))).toBe(true);
+      expect(Number.isNaN(perf.tail(rets, 1.1))).toBe(true);
+      expect(Number.isNaN(perf.expshortfall(rets, 1.5))).toBe(true);
     });
 
     it('distribution parametric normInv regions and parametric NaN/zero stdev', () => {
       const rets = [0.01, -0.02, 0.03, -0.01, 0.02];
       // lower region (p < pLow)
-      const vLow = perf.valueAtRisk(rets, 0.001, 'parametric');
+      const vLow = perf.var(rets, 0.001, 'parametric');
       expect(typeof vLow).toBe('number');
       // central region (p between pLow and pHigh)
-      const vMid = perf.valueAtRisk(rets, 0.03, 'parametric');
+      const vMid = perf.var(rets, 0.03, 'parametric');
       expect(typeof vMid).toBe('number');
       // upper region (p > pHigh)
-      const vHigh = perf.valueAtRisk(rets, 0.98, 'parametric');
+      const vHigh = perf.var(rets, 0.98, 'parametric');
       expect(typeof vHigh).toBe('number');
 
       // expectedShortfall parametric: single valid sample -> NaN (sigma undefined)
-      expect(Number.isNaN(perf.expectedShortfall([0.01], 0.05, 'parametric'))).toBe(true);
+      expect(Number.isNaN(perf.expshortfall([0.01], 0.05, 'parametric'))).toBe(true);
       // expectedShortfall parametric: identical values -> sigma === 0 -> NaN
-      expect(Number.isNaN(perf.expectedShortfall([0.01, 0.01], 0.05, 'parametric'))).toBe(true);
+      expect(Number.isNaN(perf.expshortfall([0.01, 0.01], 0.05, 'parametric'))).toBe(true);
     });
 
     it('distribution parametric valueAtRisk NaN branches and omega all-zero', () => {
       // valueAtRisk parametric: all-NaN -> NaN
-      expect(Number.isNaN(perf.valueAtRisk([NaN, NaN], 0.05, 'parametric'))).toBe(true);
+      expect(Number.isNaN(perf.var([NaN, NaN], 0.05, 'parametric'))).toBe(true);
       // single sample -> sample stdev undefined -> NaN
-      expect(Number.isNaN(perf.valueAtRisk([0.01], 0.05, 'parametric'))).toBe(true);
+      expect(Number.isNaN(perf.expshortfall([0.01], 0.05, 'parametric'))).toBe(true);
       // identical values -> sigma === 0 -> NaN
-      expect(Number.isNaN(perf.valueAtRisk([0.01, 0.01], 0.05, 'parametric'))).toBe(true);
-
+      expect(Number.isNaN(perf.expshortfall([0.01, 0.01], 0.05, 'parametric'))).toBe(true);
       // omegaRatio: all zeros relative to requiredReturn -> no variation -> NaN
-      expect(Number.isNaN(perf.omegaRatio([0, 0, 0], 0))).toBe(true);
+      expect(Number.isNaN(perf.omega([0, 0, 0], 0))).toBe(true);
     });
 
     it('maxdd peak selection updates curPeak before trough', () => {
@@ -378,11 +376,11 @@ describe('perf edge cases', () => {
     it('calmarRatio lookback else branch and rollUlcerIndex numeric outputs', () => {
       const eq = [100, 110, 105, 120, 130, 125, 140];
       // huge lookback -> windowPeriods >= span -> startIdx = first path
-      const cr = perf.calmarRatio(eq, 10000, 252);
+      const cr = perf.calmar(eq, 10000, 252);
       expect(typeof cr).toBe('number');
 
       // rollUlcerIndex with sufficient valid samples returns numeric at some index
-      const ui = perf.rollUlcerIndex([100, 90, 95, 80, 120], 3);
+      const ui = perf.rollulcer([100, 90, 95, 80, 120], 3);
       // index 4 should be numeric after windowed computation
       expect(typeof ui[4]).toBe('number');
     });
@@ -406,7 +404,7 @@ describe('perf edge cases', () => {
       const day0 = Date.UTC(2026, 0, 1);
       const ts = [NaN, day0, day0 + DAY];
       const rets = [0.01, 0.02, 0.03];
-      const res = perf.dailyReturns(ts, rets);
+      const res = perf.dailyreturns(ts, rets);
       // NaN timestamp should be skipped, days length equals 2 (day0 and next)
       expect(res.days.length).toBe(2);
     });
@@ -416,7 +414,7 @@ describe('perf edge cases', () => {
       const day0 = Date.UTC(2026, 0, 1);
       const ts = [day0, day0 + 3 * DAY];
       const rets = [0.01, 0.02];
-      const res = perf.dailyReturns(ts, rets);
+      const res = perf.dailyreturns(ts, rets);
       expect(res.days.length).toBe(4);
       expect(res.dailyReturns.length).toBe(4);
       expect(res.dailyReturns[0]).toBeCloseTo(0.01, 8);
@@ -428,13 +426,13 @@ describe('perf edge cases', () => {
     it('distribution central-region normInv via parametric VaR/ES', () => {
       const rets = [0.01, -0.02, 0.03, -0.01, 0.02];
       // central region (p around 0.5)
-      const vmid = perf.valueAtRisk(rets, 0.5, 'parametric');
+      const vmid = perf.var(rets, 0.5, 'parametric');
       expect(typeof vmid).toBe('number');
-      const esMid = perf.expectedShortfall(rets, 0.5, 'parametric');
+      const esMid = perf.expshortfall(rets, 0.5, 'parametric');
       expect(typeof esMid).toBe('number');
 
       // p just above pLow to hit central rational approx
-      const vnear = perf.valueAtRisk(rets, 0.03, 'parametric');
+      const vnear = perf.var(rets, 0.03, 'parametric');
       expect(typeof vnear).toBe('number');
     });
 
@@ -466,12 +464,12 @@ describe('perf edge cases', () => {
       expect(dur.maxDuration).toBe(0);
 
       // recoveryFactor, calmarRatio, ulcerIndex should return NaN
-      expect(Number.isNaN(perf.recoveryFactor([]))).toBe(true);
-      expect(Number.isNaN(perf.calmarRatio([]))).toBe(true);
-      expect(Number.isNaN(perf.ulcerIndex([]))).toBe(true);
+      expect(Number.isNaN(perf.recoveryfactor([]))).toBe(true);
+      expect(Number.isNaN(perf.calmar([]))).toBe(true);
+      expect(Number.isNaN(perf.ulcer([]))).toBe(true);
 
       // rollUlcerIndex on empty -> empty Float64Array
-      const ru = perf.rollUlcerIndex([], 3);
+      const ru = perf.rollulcer([], 3);
       expect(ru).toBeInstanceOf(Float64Array);
       expect(ru.length).toBe(0);
     });
@@ -491,7 +489,7 @@ describe('perf edge cases', () => {
 
       // calmarRatio candidate falls on NaN and should advance to next valid -> yields NaN due to zero years
       const seq3 = [100, 110, NaN, NaN, 120];
-      const cr = perf.calmarRatio(seq3, 1 / 252, 252); // windowPeriods = 1
+      const cr = perf.calmar(seq3, 1 / 252, 252); // windowPeriods = 1
       expect(Number.isNaN(cr)).toBe(true);
 
       // dduration with interleaved NaNs marks NaNs as -1 and counts durations correctly
@@ -507,7 +505,7 @@ describe('perf edge cases', () => {
       // candidate = last - windowPeriods; candidate points to NaN and loop should pick next valid
       const seq = [NaN, 100, NaN, NaN, 120, 110];
       // choose lookback small so windowPeriods = 2
-      const cr = perf.calmarRatio(seq, 0.01, 252);
+      const cr = perf.calmar(seq, 0.01, 252);
       // should return a number (valid startIdx selection)
       expect(typeof cr).toBe('number');
     });
@@ -521,15 +519,15 @@ describe('perf edge cases', () => {
     });
 
     it('calmarRatio startVal <= 0 returns NaN and recoveryFactor invalid spans', () => {
-      expect(Number.isNaN(perf.calmarRatio([0, NaN, 10]))).toBe(true);
+      expect(Number.isNaN(perf.calmar([0, NaN, 10]))).toBe(true);
       // recoveryFactor where last <= first or insufficient span
-      expect(Number.isNaN(perf.recoveryFactor([100]))).toBe(true);
+      expect(Number.isNaN(perf.recoveryfactor([100]))).toBe(true);
     });
 
     it('dd exhaustive combos to exercise remaining branches', () => {
       // candidate valid path: candidate index is valid (no NaN)
       const seqA = [100, 90, 95, 120, 110, 105, 130];
-      const crA = perf.calmarRatio(seqA, 0.01, 252);
+      const crA = perf.calmar(seqA, 0.01, 252);
       expect(typeof crA).toBe('number');
 
       // maxddDetails with multiple peaks and a recovery after trough
@@ -538,8 +536,8 @@ describe('perf edge cases', () => {
       expect(dB.startIndex).toBe(3);
       expect(dB.endIndex).toBe(5);
 
-      // rollUlcerIndex with minPeriod larger than counts yields NaN at indices with insufficient valid
-      const ruh = perf.rollUlcerIndex([NaN, 100, 90, 95], 3, 3);
+      // rollulcer with minPeriod larger than counts yields NaN at indices with insufficient valid
+      const ruh = perf.rollulcer([NaN, 100, 90, 95], 3, 3);
       expect(Number.isNaN(ruh[2])).toBe(true);
 
       // dd with alternating NaNs and numbers to hit mask continues and peak updates
@@ -606,11 +604,11 @@ describe('perf edge cases', () => {
       expect(dur.durations).toBeInstanceOf(Int32Array);
       for (let i = 0; i < dur.durations.length; i++) expect(dur.durations[i]).toBe(-1);
 
-      expect(Number.isNaN(perf.recoveryFactor(allNaN))).toBe(true);
-      expect(Number.isNaN(perf.calmarRatio(allNaN))).toBe(true);
-      expect(Number.isNaN(perf.ulcerIndex(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.recoveryfactor(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.calmar(allNaN))).toBe(true);
+      expect(Number.isNaN(perf.ulcer(allNaN))).toBe(true);
 
-      const ru = perf.rollUlcerIndex(allNaN, 3);
+      const ru = perf.rollulcer(allNaN, 3);
       expect(ru).toBeInstanceOf(Float64Array);
       for (let i = 0; i < ru.length; i++) expect(Number.isNaN(ru[i])).toBe(true);
     });
@@ -621,7 +619,7 @@ describe('perf edge cases', () => {
       expect(crEmpty).toBeInstanceOf(Float64Array);
       expect(crEmpty.length).toBe(0);
       expect(Number.isNaN(perf.cagr([]))).toBe(true);
-      const drEmpty = perf.dailyReturns([], []);
+      const drEmpty = perf.dailyreturns([], []);
       expect(Array.isArray(drEmpty.days)).toBe(true);
       expect(drEmpty.days.length).toBe(0);
       expect(drEmpty.dailyReturns).toBeInstanceOf(Float32Array);
@@ -633,7 +631,7 @@ describe('perf edge cases', () => {
       expect(crNaN).toBeInstanceOf(Float64Array);
       for (let i = 0; i < crNaN.length; i++) expect(Number.isNaN(crNaN[i])).toBe(true);
       expect(Number.isNaN(perf.cagr(allNaN))).toBe(true);
-      const drAllNaN = perf.dailyReturns([NaN, NaN], [NaN, NaN]);
+      const drAllNaN = perf.dailyreturns([NaN, NaN], [NaN, NaN]);
       expect(drAllNaN.days.length).toBe(0);
 
       // mixed NaN and numbers
@@ -649,7 +647,7 @@ describe('perf edge cases', () => {
       const day0 = Date.UTC(2026, 0, 1);
       const ts = [day0, NaN, day0 + DAY, day0 + DAY + 1000];
       const rets = [0.01, 0.02, NaN, 0.03];
-      const res = perf.dailyReturns(ts, rets);
+      const res = perf.dailyreturns(ts, rets);
       // should skip NaN timestamp and NaN return; produce days for day0 and next day
       expect(res.days.length).toBeGreaterThanOrEqual(1);
       expect(res.dailyReturns).toBeInstanceOf(Float32Array);

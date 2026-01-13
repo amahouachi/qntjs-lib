@@ -269,7 +269,7 @@ export function dduration(equity: ArrayLike<number>): DrawdownDurationResult {
  * @param freq Periods per year (default 252)
  * @returns Recovery factor or NaN
  */
-export function recoveryFactor(equity: ArrayLike<number>, freq: number = 252): number {
+export function recoveryfactor(equity: ArrayLike<number>, freq: number = 252): number {
   const n = equity.length;
   if (n === 0) return NaN;
 
@@ -295,8 +295,6 @@ export function recoveryFactor(equity: ArrayLike<number>, freq: number = 252): n
   return cagr / mdd;
 }
 
-// Calmar ratio: annualized return (CAGR) over lookbackPeriodYears divided by max drawdown magnitude
-// If lookbackPeriodYears is null/undefined, uses the entire series span. freq is periods per year.
 /**
  * Calmar ratio: CAGR over a lookback period divided by the max drawdown magnitude over the same period.
  * If `lookbackPeriodYears` is null uses the entire series. Returns NaN on invalid inputs or zero drawdown.
@@ -305,7 +303,7 @@ export function recoveryFactor(equity: ArrayLike<number>, freq: number = 252): n
  * @param freq Periods per year (default 252)
  * @returns Calmar ratio or NaN
  */
-export function calmarRatio(equity: ArrayLike<number>, lookbackPeriodYears: number | null = 3, freq: number = 252): number {
+export function calmar(equity: ArrayLike<number>, lookbackPeriodYears: number | null = 3, freq: number = 252): number {
   const n = equity.length;
   if (n === 0) return NaN;
   const mask = arr.notna(equity);
@@ -356,7 +354,7 @@ export function calmarRatio(equity: ArrayLike<number>, lookbackPeriodYears: numb
  * @param equity Array-like equity or price series
  * @returns Ulcer Index (>=0) or NaN
  */
-export function ulcerIndex(equity: ArrayLike<number>): number {
+export function ulcer(equity: ArrayLike<number>): number {
   const n = equity.length;
   if (n === 0) return NaN;
   const mask = arr.notna(equity);
@@ -393,7 +391,7 @@ export function ulcerIndex(equity: ArrayLike<number>): number {
  * @param minPeriod Minimum number of valid points required in window
  * @returns Float64Array of rolling ulcer index values
  */
-export function rollUlcerIndex(equity: ArrayLike<number>, window: number, minPeriod: number = 1): Float64Array {
+export function rollulcer(equity: ArrayLike<number>, window: number, minPeriod: number = 1): Float64Array {
   if (window <= 0) throw new Error('window must be positive');
   const n = equity.length;
   const out = new Float64Array(n);

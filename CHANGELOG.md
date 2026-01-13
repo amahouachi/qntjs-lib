@@ -2,6 +2,17 @@
 
 All notable changes to this project should be documented in this file.
 
+## 2.0.0
+- Renamed valueAtRisk to var
+- Renamed expectedShortfall to expshortfall
+- Renamed omegaRatio to omega
+- Renamed tailRatio to tail
+- Renamed recoveryFactor to recoveryfactor
+- Renamed calmarRatio to calmar
+- Renamed ulcerIndex to ulcer
+- Renamed rollUlcerIndex to rollulcer
+- Renamed dailyReturns to dailyreturns
+
 ## 1.1.5
 - Add missing api functions to doc
 

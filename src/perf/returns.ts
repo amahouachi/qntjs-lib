@@ -110,7 +110,7 @@ export function cagr(returns: ArrayLike<number>, freq: number = 252): number {
  * @param tzOffsetMinutes Optional timezone offset in minutes (default 0, UTC)
  * @returns Object { days: number[], dailyReturns: Float32Array }
  */
-export function dailyReturns(tsMs: ArrayLike<number>, returnsArr: ArrayLike<number>, tzOffsetMinutes = 0) {
+export function dailyreturns(tsMs: ArrayLike<number>, returnsArr: ArrayLike<number>, tzOffsetMinutes = 0) {
   const n = Math.min(tsMs.length, returnsArr.length);
   if (n === 0) return { days: [], dailyReturns: new Float32Array(0) };
 

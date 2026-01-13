@@ -106,7 +106,7 @@ export function valueAtRisk(
  * @param method 'historical' | 'parametric' (default 'historical')
  * @returns Expected shortfall (left-tail) or NaN
  */
-export function expectedShortfall(
+export function expshortfall(
   returns: ArrayLike<number>,
   alpha: number = 0.05,
   method: 'historical' | 'parametric' = 'historical'
@@ -138,7 +138,6 @@ export function expectedShortfall(
   return es;
 }
 
-// Tail ratio: mean of upper tail (1-alpha..1) divided by absolute mean of lower tail (0..alpha)
 /**
  * Tail ratio: mean of upper tail divided by absolute mean of lower tail.
  * Returns NaN for empty inputs, invalid alpha, or when either tail has no observations or lower mean is zero.
@@ -146,7 +145,7 @@ export function expectedShortfall(
  * @param alpha Tail probability (default 0.05)
  * @returns Tail ratio or NaN
  */
-export function tailRatio(returns: ArrayLike<number>, alpha: number = 0.05): number {
+export function tail(returns: ArrayLike<number>, alpha: number = 0.05): number {
   const n = returns.length;
   if (n === 0) return NaN;
   if (alpha <= 0 || alpha >= 1) return NaN;
@@ -180,7 +179,7 @@ export function tailRatio(returns: ArrayLike<number>, alpha: number = 0.05): num
  * @param requiredReturn Threshold for gains/losses (default 0)
  * @returns Omega ratio number, Infinity if no losses, or NaN when no variation
  */
-export function omegaRatio(
+export function omega(
   returns: ArrayLike<number>,
   requiredReturn: number = 0
 ): number {
@@ -207,7 +206,7 @@ export function omegaRatio(
 
 export default {
   valueAtRisk,
-  expectedShortfall,
-  tailRatio,
-  omegaRatio
+  expectedShortfall: expshortfall,
+  tailRatio: tail,
+  omegaRatio: omega
 };

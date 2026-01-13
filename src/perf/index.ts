@@ -1,5 +1,5 @@
-export { cagr, cumreturns, logreturns, returns, dailyReturns } from './returns.js';
-export { dd, dduration, maxdd, maxddDetails, recoveryFactor, calmarRatio, rollmaxdd, ulcerIndex, rollUlcerIndex } from './dd.js';
-export type { DrawdownDurationResult, MaxDrawdownInfo } from './dd.js';
+export { cagr, cumreturns, logreturns, returns, dailyreturns } from './returns.js';
+export { dd, dduration, maxdd, maxddDetails, recoveryfactor, calmar, rollmaxdd, ulcer, rollulcer } from './dd.js';
 export { sharpe, sortino, rollsharpe, rollsortino, vol, rollvol } from './volatility.js';
-export { valueAtRisk, expectedShortfall, omegaRatio, tailRatio } from './distribution.js';
+export { valueAtRisk as var, expshortfall, omega, tail } from './distribution.js';
+export type { DrawdownDurationResult, MaxDrawdownInfo } from './dd.js';
