@@ -114,9 +114,9 @@ const filled = arr.ffill(a);
 
  - **`math.*`** : `add`, `sub`, `avg`, `mul`, `div`, `scale`, `abs`, `sign`, `round`, `floor`, `ceil`, `eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `and`, `or`, `not`, `clamp`, `sum`, `prod`, `min`, `max`, `argmin`, `argmax`, `cumsum`, `cumprod`, `cummax`, `cummin`, `rollsum`, `rollmin`, `rollmax`, `rollminmax`, `rollprod`, `rollargmin`, `rollargmax`, `diff`, `randuniform`, `randnormal`, `dot`, `norm`, `ols`, `olsMulti`
 
- - **`stats.*`** : `mean`, `hmean`, `gmean`, `mad`, `skew`, `kurtosis`, `median`, `quantile`, `percentiles`, `var`, `covar`, `stdev`, `corr`, `zscore`, `norminmax`, `winsorize`, `sample`, `shuffle`, `bootstrap`
+ - **`stats.*`** : `mean`, `hmean`, `gmean`, `mad`, `skew`, `kurtosis`, `median`, `quantile`, `percentiles`, `var`, `covar`, `stdev`, `corr`, `zscore`, `norminmax`, `winsorize`, `sample`, `shuffle`, `bootstrap`, `rollmean`, `rollmedian`, `rollquantile`, `rollvar`, `rollcovar`, `rollstdev`, `rollcorr`, `rollskew`, `rollkurtosis`
 
-- **`ta.*`** : `dema`, `ema`, `hma`, `kama`, `sma`, `wma`, `vwma`, `trima`, `t3`, `tema`, `rma`, `ao`, `apo`, `aroon`, `change`, `cmo`, `kst`, `macd`, `mom`, `ppo`, `roc`, `rsi`, `stoch`, `stochrsi`, `ultosc`, `wpr`, `supertrend`, `adx`, `adxr`, `dx`, `cci`, `di`, `dpo`, `ichimoku`, `psar`, `atr`, `tr`, `natr`, `bb`, `bbw`, `donchian`, `keltner`, `adosc`, `obv`, `pnvi`, `wad`, `ad`, `mfi`, `cross`, `crossover`, `crossunder`, `rising`, `falling`
+ - **`ta.*`** : `dema`, `ema`, `hma`, `kama`, `sma`, `wma`, `vwma`, `trima`, `t3`, `tema`, `rma`, `ao`, `apo`, `aroon`, `change`, `cmo`, `kst`, `macd`, `mom`, `ppo`, `roc`, `rsi`, `stoch`, `stochrsi`, `ultosc`, `wpr`, `supertrend`, `adx`, `adxr`, `dx`, `cci`, `di`, `dpo`, `ichimoku`, `psar`, `atr`, `tr`, `natr`, `bb`, `bbw`, `donchian`, `keltner`, `adosc`, `obv`, `pnvi`, `wad`, `ad`, `mfi`, `cross`, `crossover`, `crossunder`, `rising`, `falling`
 
  - **`perf.*`** : `returns`, `logreturns`, `cumreturns`, `cagr`, `dailyReturns`, `dd`, `maxdd`, `maxddDetails`, `dduration`, `rollmaxdd`, `recoveryFactor`, `calmarRatio`, `ulcerIndex`, `rollUlcerIndex`, `sharpe`, `sortino`, `rollsharpe`, `rollsortino`, `vol`, `rollvol`, `valueAtRisk`, `expectedShortfall`, `tailRatio`, `omegaRatio`
 

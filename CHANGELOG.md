@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 1.1.5
+- Add missing api functions to doc
+
 ## 1.1.4
 - Fix Readme links
 
