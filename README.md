@@ -1,4 +1,12 @@
+<div align="center">
+
 # qntjs-lib
+
+[![CI](https://github.com/amahouachi/qntjs-lib/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/amahouachi/qntjs-lib/actions/workflows/node.js.yml)
+![NPM Version](https://img.shields.io/npm/v/qntjs-lib)
+![GitHub License](https://img.shields.io/github/license/amahouachi/qntjs-lib?label=license)
+
+</div>
 
 A pure fast JavaScript/TypeScript library of technical‑analysis indicators, trading performance/risk metrics, array utilities, and numerical helpers.
 
@@ -138,18 +146,12 @@ Run tests:
 npm test
 ```
 
-Build (produce distributable artifacts):
+Build
 
 ```bash
 npm run build
 ```
 
-## Contributing
-
-- Open an issue to discuss larger changes.
-- Run tests and keep coverage high for changes to core algorithms.
-- Follow the existing style and types in `src/`.
-
 ## License
 
-See `LICENSE` in the repo root.
+This project is licensed under the terms of the [MIT license](./LICENSE)

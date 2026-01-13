@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 1.1.3
+- Update License and Readme
+
 ## 1.1.2
 - Include all typed array types in the untyped generation script
 
