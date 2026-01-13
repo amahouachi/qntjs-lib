@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 1.1.4
+- Fix Readme links
+
 ## 1.1.3
 - Update License and Readme
 

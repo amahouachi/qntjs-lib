@@ -3,8 +3,8 @@
 # qntjs-lib
 
 [![CI](https://github.com/amahouachi/qntjs-lib/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/amahouachi/qntjs-lib/actions/workflows/node.js.yml)
-![NPM Version](https://img.shields.io/npm/v/qntjs-lib)
-![GitHub License](https://img.shields.io/github/license/amahouachi/qntjs-lib?label=license)
+[![NPM Version](https://img.shields.io/npm/v/qntjs-lib)](https://www.npmjs.com/package/qntjs-lib)
+[![GitHub License](https://img.shields.io/github/license/amahouachi/qntjs-lib?label=license)](./LICENSE)
 
 </div>
 
