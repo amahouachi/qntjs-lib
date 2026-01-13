@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 1.1.2
+- Include all typed array types in the untyped generation script
+
 ## 1.1.1
 - Fix perf type exports
 

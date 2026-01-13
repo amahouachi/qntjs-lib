@@ -15,12 +15,14 @@ if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
 }
 
-// Runtime wrapper: convert Float64Array → Array
-const runtimeWrapper = `// Generated untyped wrapper — converts Float64Array -> number[] and recursively maps tuples/arrays
+// Runtime wrapper: convert numeric typed arrays -> plain number[] and recursively map tuples/arrays
+const runtimeWrapper = `// Generated untyped wrapper — converts numeric TypedArrays -> number[] and recursively maps tuples/arrays
 import * as core from '../bundle/index.js';
 
 function convert(val) {
-  if (val instanceof Float64Array) return Array.from(val);
+  if (val instanceof Float64Array || val instanceof Float32Array || val instanceof Int32Array || val instanceof Uint32Array || val instanceof Int16Array || val instanceof Uint16Array || val instanceof Int8Array || val instanceof Uint8Array) {
+    return Array.from(val);
+  }
   if (Array.isArray(val)) return val.map(convert);
   return val;
 }
@@ -125,12 +127,11 @@ function extractFunctions(node) {
       typeParams = `<${typeParamsList}>`;
     }
     
-    // Extract and transform return type (Float64Array/Uint8Array -> number[])
+    // Extract and transform return type (TypedArray -> number[])
     let returnType = 'void';
     if (node.type) {
       returnType = node.type.getText(sourceFile)
-        .replace(/Float64Array(<[^>]+>)?/g, 'number[]')
-        .replace(/Uint8Array/g, 'number[]');
+        .replace(/(?:Float64Array|Float32Array|Int32Array|Uint32Array|Int16Array|Uint16Array|Int8Array|Uint8Array)(<[^>]+>)?/g, 'number[]');
     }
     
     functionMap.set(functionName, {

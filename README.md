@@ -2,10 +2,7 @@
 
 A pure fast JavaScript/TypeScript library of technical‑analysis indicators, trading performance/risk metrics, array utilities, and numerical helpers.
 
-This repository implements a wide set of TA indicators (EMA, TEMA, T3, MFI, KAMA, etc.), common trading performance metrics/utilities, vectorized math functions, and statistical helpers. Where applicable, implementations are optimized for two common usage patterns:
-
-- NaN‑aware workflows (default): functions are NaN‑aware and will skip NaN values where appropriate.
-- Dense fast‑path: when you know inputs contain no NaNs you can opt into a dense, faster implementation by passing `skipna=false` to supported functions.
+This package implements several TA indicators (EMA, TEMA, T3, MFI, KAMA, etc.), common trading performance metrics/utilities, vectorized math functions, and statistical helpers. 
 
 By default the main (typed) build returns typed arrays (e.g. `Float64Array`) for better numeric performance and predictable memory layout. A companion "untyped" build exposes the same API but returns plain `number[]` values for easier interoperability with plain JavaScript code.
 
@@ -43,19 +40,7 @@ When to use each:
 - Use the default import (`qntjs-lib`) when you want outputs as `Float64Array` for numeric performance and predictable memory layout.
 - Use `qntjs-lib/untyped` when you prefer plain `number[]` outputs for easier inspection or serialization.
 
-## skipna and dense fast-path
-
-Many indicators accept an optional `skipna` boolean (default `true`). Example:
-
-```js
-// NaN-aware (default)
-ta.sma(pricesWithGaps, 5);
-
-// Dense fast-path (assume no NaNs)
-ta.sma(densePrices, 5, false);
-```
-
-## Modules and examples
+## Modules
 
 Overview of top-level modules and minimal examples showing common usage patterns.
 
@@ -128,7 +113,24 @@ const filled = arr.ffill(a);
  - **`perf.*`** : `returns`, `logreturns`, `cumreturns`, `cagr`, `dailyReturns`, `dd`, `maxdd`, `maxddDetails`, `dduration`, `rollmaxdd`, `recoveryFactor`, `calmarRatio`, `ulcerIndex`, `rollUlcerIndex`, `sharpe`, `sortino`, `rollsharpe`, `rollsortino`, `vol`, `rollvol`, `valueAtRisk`, `expectedShortfall`, `tailRatio`, `omegaRatio`
 
 
+## skipna and dense fast-path
+
+Where applicable, implementations are optimized for two common usage patterns:
+
+- NaN‑aware workflows (default): functions are NaN‑aware and will skip NaN values where appropriate.
+- Dense fast‑path: when you know inputs contain no NaNs you can opt into a dense, faster implementation by passing `skipna=false` to supported functions.
+
+```js
+// NaN-aware (default)
+ta.sma(pricesWithGaps, 5);
+
+// Dense fast-path (assume no NaNs)
+ta.sma(densePrices, 5, false);
+```
+
 ## Tests & development
+
+Many functions, especially TA indicators are tested for correctness against Tulind library.
 
 Run tests:
 
