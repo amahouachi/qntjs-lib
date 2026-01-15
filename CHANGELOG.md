@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 2.0.2
+- Fix chained condition of shouldSkipDenseOptimization
+
 ## 2.0.1
 - Fixed api names in doc
 

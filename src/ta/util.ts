@@ -17,8 +17,7 @@
  * @returns `true` when dense optimizations should be skipped
  */
 export function shouldSkipDenseOptimization(): boolean {
-  if(typeof process === 'undefined' || typeof process.env === 'undefined') return false;
-  return process?.env?.SKIP_DENSE_OPTIMIZATION === 'true';
+  return (typeof process === 'undefined' || typeof process.env === 'undefined') ? false : (process.env.SKIP_DENSE_OPTIMIZATION === 'true');
 }
 
 function risingOrFalling(source: ArrayLike<number>, length: number, direction: 'rising' | 'falling', skipna = true): Uint8Array {
