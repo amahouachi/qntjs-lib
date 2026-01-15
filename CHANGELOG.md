@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 2.0.3
+- Update TS target to ES2019
+
 ## 2.0.2
 - Fix chained condition of shouldSkipDenseOptimization
 
