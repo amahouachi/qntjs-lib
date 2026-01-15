@@ -433,12 +433,16 @@ describe('Math utilities', () => {
     // rollargmin / rollargmax should return indices of min/max within the full array
     const rargmin = math.rollargmin(src, 3);
     const rargmax = math.rollargmax(src, 3);
-    expect(rargmin[2]).toBe(0);
-    expect(rargmin[3]).toBe(2);
-    expect(rargmin[4]).toBe(2);
-    expect(rargmax[2]).toBe(1);
-    expect(rargmax[3]).toBe(3);
-    expect(rargmax[4]).toBe(3);
+    // With period=3, windows are [i-3, i], so:
+    // i=2: [max(-1,0), 2] = [0, 2] = [1,3,2], min=1@0, max=3@1
+    // i=3: [0, 3] = [1,3,2,5], min=1@0, max=5@3
+    // i=4: [1, 4] = [3,2,5,4], min=2@2, max=5@3
+    expect(rargmin[2]).toBe(0); // min is 1 at index 0
+    expect(rargmin[3]).toBe(0); // min is 1 at index 0
+    expect(rargmin[4]).toBe(2); // min is 2 at index 2
+    expect(rargmax[2]).toBe(1); // max is 3 at index 1
+    expect(rargmax[3]).toBe(3); // max is 5 at index 3
+    expect(rargmax[4]).toBe(3); // max is 5 at index 3
 
     // rollminmax with callback
     const cbCalls: Array<{min:number;max:number;i:number}> = [];

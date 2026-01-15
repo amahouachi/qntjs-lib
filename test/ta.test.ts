@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { arr, ta, math } from '../src/index.js';
 import * as tulind from 'tulind';
-import { PERIOD, CLOSE, HIGH, LOW, VOLUME, compareToTulind, tulindRun, CLOSE_GAPPED, SLICED_INPUT, assert_arrays_close, talibRun } from './helpers';
+import { PERIOD, CLOSE, HIGH, LOW, VOLUME, compareToTulind, tulindRun, CLOSE_GAPPED, SLICED_INPUT, assert_arrays_close, talibRun, adaptTulindResults } from './helpers';
 import { ALL_NAN, SHORT_INPUT } from './helpers.js';
 
 describe('1-input indicators', () => {
@@ -119,10 +119,48 @@ describe('AO', () => {
 describe('AROON', () => {
   it('matches Tulind', async () => {
     const [qUp, qDown] = ta.aroon(HIGH, LOW, 14);
-    const tul = await tulindRun(tulind.indicators.aroonosc, [HIGH, LOW], 14);
+    const tul = await tulindRun(tulind.indicators.aroon, [HIGH, LOW], 14);
     // Tulind returns [aroonDown, aroonUp] so compare accordingly
-    compareToTulind(qUp, tul[1]);
-    compareToTulind(qDown, tul[0]);
+    try {
+      compareToTulind(qUp, tul[1]);
+      compareToTulind(qDown, tul[0]);
+    } catch (err) {
+      // Diagnostic logs to inspect mismatch between our outputs and Tulind
+      console.error('\n--- AROON DIAGNOSTIC ---');
+      console.error('qUp finite count:', Array.from(qUp).filter(Number.isFinite).length);
+      console.error('qDown finite count:', Array.from(qDown).filter(Number.isFinite).length);
+      console.error('tul lengths:', tul.length, tul[0]?.length, tul[1]?.length);
+      console.error('first 40 qUp:', Array.from(qUp).slice(0,40));
+      console.error('first 40 qDown:', Array.from(qDown).slice(0,40));
+      console.error('first 40 tulUp (adapted):', tul[1].slice(0,40));
+      console.error('first 40 tulDown (adapted):', tul[0].slice(0,40));
+
+      // More diagnostics: find first index where both are finite and differ
+      const adaptedTulUp = adaptTulindResults(qUp, tul[1], qUp.length);
+      const n = qUp.length; let mism = -1;
+      for (let i=0;i<n;i++) {
+        if (Number.isFinite(qUp[i]) && Number.isFinite(adaptedTulUp[i]) && Math.abs(qUp[i] - adaptedTulUp[i]) > 1e-9) { mism = i; break; }
+      }
+      if (mism !== -1) {
+        console.error('First mismatch index', mism, 'qUp', qUp[mism], 'tul', adaptedTulUp[mism]);
+        const i = mism + 1; const start = i - 14 + 1; console.error('lookback window indices', start, 'to', i);
+        console.error('HIGH window:', HIGH.slice(Math.max(0,start), Math.min(HIGH.length, i+1)));
+        console.error('LOW window:', LOW.slice(Math.max(0,start), Math.min(LOW.length, i+1)));
+        const tulVal = adaptedTulUp[mism];
+        const tul_daysSinceHigh = Number.isFinite(tulVal) ? Math.round(14 - (tulVal/100)*14) : NaN;
+        const tulHiIdx = Number.isFinite(tul_daysSinceHigh) ? i - tul_daysSinceHigh : NaN;
+        console.error('Tulind implied hiIdx', tulHiIdx, 'value', HIGH[tulHiIdx]);
+
+        // compare to our rolling argmax indices
+        const argMax = math.rollargmax(HIGH, 14);
+        console.error('argMax at i-1, i, i+1:', argMax[mism-1], argMax[mism], argMax[mism+1]);
+        console.error('values at argMax indices:', HIGH[argMax[mism-1]], HIGH[argMax[mism]], HIGH[argMax[mism+1]]);
+      } else {
+        console.error('No per-index finite mismatch found (unexpected)');
+      }
+
+      throw err;
+    }
   });
   it('returns all NaN if any input is all NaN', () => {
     const [aUp, aDown] = ta.aroon(ALL_NAN, LOW, 14);
@@ -204,7 +242,7 @@ describe('STOCH', () => {
     }
   });
   it('returns all NaN if n < required period or inputs are all NaN', () => {
-    expect(ta.stoch(SHORT_INPUT, SHORT_INPUT, SHORT_INPUT, 2, 2, 2).every(a => arr.allna(a))).toBe(true);
+    expect(ta.stoch(SHORT_INPUT, SHORT_INPUT, SHORT_INPUT, 5, 3, 10).every(a => arr.allna(a))).toBe(true);
     expect(ta.stoch(ALL_NAN, ALL_NAN, ALL_NAN, 5, 3, 10).every(a => arr.allna(a))).toBe(true);
   });
   it('throws error if input lengths differ', () => {

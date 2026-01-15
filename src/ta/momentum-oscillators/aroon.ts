@@ -22,7 +22,9 @@ export function aroon(high: ArrayLike<number>, low: ArrayLike<number>, period: n
   up.fill(NaN); down.fill(NaN);
   if (n < period) return [up, down];
 
-  if (arr.havena(high, low)) return [up, down];
+
+  // If skipna=true and any NaNs are present, return NaN-filled outputs (match expected semantics)
+  if (skipna && arr.havena(high, low)) return [up, down];
 
   let _skipna = skipna;
   if(_skipna && !shouldSkipDenseOptimization()) {
@@ -47,7 +49,7 @@ export function aroon(high: ArrayLike<number>, low: ArrayLike<number>, period: n
     let lowestVal = NaN;
 
     for (let i = period; i < n; i++) {
-      const start = i - period + 1;
+      const start = i - period;
 
       // highest
       if (highestIdx < start) {
@@ -56,12 +58,12 @@ export function aroon(high: ArrayLike<number>, low: ArrayLike<number>, period: n
         for (let j = start; j <= i; j++) {
           const v = high[j];
           if (v !== v) continue;
-          if (highestIdx === -1 || v > highestVal) { highestIdx = j; highestVal = v; }
+          if (highestIdx === -1 || v >= highestVal) { highestIdx = j; highestVal = v; }
         }
       } else {
         const v = high[i];
         if (v === v) {
-          if (highestIdx === -1 || v > highestVal) { highestIdx = i; highestVal = v; }
+          if (highestIdx === -1 || v >= highestVal) { highestIdx = i; highestVal = v; }
         }
       }
       const daysSinceHigh = highestIdx === -1 ? NaN : (i - highestIdx);
@@ -73,12 +75,12 @@ export function aroon(high: ArrayLike<number>, low: ArrayLike<number>, period: n
         for (let j = start; j <= i; j++) {
           const v = low[j];
           if (v !== v) continue;
-          if (lowestIdx === -1 || v < lowestVal) { lowestIdx = j; lowestVal = v; }
+          if (lowestIdx === -1 || v <= lowestVal) { lowestIdx = j; lowestVal = v; }
         }
       } else {
         const v = low[i];
         if (v === v) {
-          if (lowestIdx === -1 || v < lowestVal) { lowestIdx = i; lowestVal = v; }
+          if (lowestIdx === -1 || v <= lowestVal) { lowestIdx = i; lowestVal = v; }
         }
       }
       const daysSinceLow = lowestIdx === -1 ? NaN : (i - lowestIdx);

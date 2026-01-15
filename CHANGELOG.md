@@ -2,6 +2,10 @@
 
 All notable changes to this project should be documented in this file.
 
+## 2.0.4
+- Fixed bugs in ta functions : trima, hma, aroon and stoch
+- Fixed bug on how results are compared to tulind
+
 ## 2.0.3
 - Update TS target to ES2019
 

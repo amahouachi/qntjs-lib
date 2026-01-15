@@ -61,6 +61,20 @@ export function adaptTulindResults(qntjsResults: Float64Array, tulResults: numbe
 export function compareToTulind(qntjsResult: Float64Array, tulResult: number[], tol = 1e-8) {
   const n= qntjsResult.length;
   const adaptedTulindResults = adaptTulindResults(qntjsResult, tulResult, n);
+  // Ensure there is at least one overlapping finite value to compare. If not,
+  // fail early — this catches cases where our implementation produced all
+  // NaNs while Tulind returned valid numbers (a silent false-positive).
+  let foundOverlap = false;
+  for (let i = 0; i < n; i++) {
+    if (Number.isFinite(qntjsResult[i]) && Number.isFinite(adaptedTulindResults[i])) {
+      foundOverlap = true;
+      break;
+    }
+  }
+  if (!foundOverlap) {
+    throw new Error('No overlapping finite outputs between qntjs results and Tulind outputs — possible implementation bug');
+  }
+
   // find first index where both are valid
   let start= 0;
   while (start < n && (Number.isNaN(qntjsResult[start]) || Number.isNaN(adaptedTulindResults[start]))) start++;

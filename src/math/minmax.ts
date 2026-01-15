@@ -75,8 +75,8 @@ export function rollminmax(minSource: ArrayLike<number>, maxSource: ArrayLike<nu
   for (let i = 0; i < period - 1; i++) {
     const vMin = minSource[i];
     const vMax = maxSource[i];
-    while (tailMin > headMin && minSource[dqMin[tailMin - 1]] > vMin) tailMin--;
-    while (tailMax > headMax && maxSource[dqMax[tailMax - 1]] < vMax) tailMax--;
+    while (tailMin > headMin && minSource[dqMin[tailMin - 1]] >= vMin) tailMin--;
+    while (tailMax > headMax && maxSource[dqMax[tailMax - 1]] <= vMax) tailMax--;
     if (vMin === vMin) dqMin[tailMin++] = i;
     if (vMax === vMax) dqMax[tailMax++] = i;
   }
@@ -264,9 +264,10 @@ export function rollargmin(source: ArrayLike<number>, period: number): Float64Ar
 
   for (let i = 0; i < n; i++) {
     const v = source[i];
-    while (tail > head && dq[head] <= i - period) head++;
+    while (tail > head && dq[head] < i - period) head++;
     if (v === v) {
-      while (tail > head && source[dq[tail - 1]] > v) tail--;
+      // Prefer the newest index in case of ties
+      while (tail > head && source[dq[tail - 1]] >= v) tail--;
       dq[tail++] = i;
     }
     if (i >= period - 1) out[i] = tail > head ? dq[head] : NaN;
@@ -293,9 +294,10 @@ export function rollargmax(source: ArrayLike<number>, period: number): Float64Ar
 
   for (let i = 0; i < n; i++) {
     const v = source[i];
-    while (tail > head && dq[head] <= i - period) head++;
+    while (tail > head && dq[head] < i - period) head++;
     if (v === v) {
-      while (tail > head && source[dq[tail - 1]] < v) tail--;
+      // Prefer the newest index in case of ties
+      while (tail > head && source[dq[tail - 1]] <= v) tail--;
       dq[tail++] = i;
     }
     if (i >= period - 1) out[i] = tail > head ? dq[head] : NaN;

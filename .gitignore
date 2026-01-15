@@ -8,8 +8,8 @@ dist/
 **/*.d.ts
 **/*.js.map
 
-# keep misc and config
 example-client/
+codesandbox/
 
 !scripts/*.js
 !vite.config.js

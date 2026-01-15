@@ -1,4 +1,5 @@
 import { wma } from "./wma.js";
+import { havena } from "../../arr/arr.js";
 
 /**
  * Hull Moving Average (HMA).
@@ -20,12 +21,37 @@ export function hma(source: ArrayLike<number>, period: number): Float64Array {
   const raw = new Float64Array(n);
   for (let i = 0; i < period - 1; i++) raw[i] = NaN;
 
-  const wmaHalf = wma(source, half);
-  const wmaFull = wma(source, period);
+  // Select skipna mode: dense=false (stricter), gapped=true (NaN-aware)
+  const skipna = havena(source);
+
+  // Compute WMAs and intermediate 'raw' series
+  const wmaHalf = wma(source, half, skipna);
+  const wmaFull = wma(source, period, skipna);
 
   for (let i = period - 1; i < n; i++) {
     raw[i] = 2 * wmaHalf[i] - wmaFull[i];
   }
 
-  return wma(raw, sqrtP, false);
+  // Find first finite value in raw (where warmup ends)
+  let firstFinite = -1;
+  for (let i = 0; i < n; i++) {
+    if (Number.isFinite(raw[i])) {
+      firstFinite = i;
+      break;
+    }
+  }
+  if (firstFinite === -1) return raw;
+
+  // Extract suffix from first finite value and apply final WMA
+  // This ensures correct index alignment for the final smoothing
+  const suffix = raw.slice(firstFinite);
+  const wmaSuffix = wma(suffix, sqrtP, skipna);
+
+  // Map results back to original full-length array
+  const result = new Float64Array(n);
+  result.fill(NaN);
+  for (let i = 0; i < wmaSuffix.length; i++) {
+    result[firstFinite + i] = wmaSuffix[i];
+  }
+  return result;
 }
